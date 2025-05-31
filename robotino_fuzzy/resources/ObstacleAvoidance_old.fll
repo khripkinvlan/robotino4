@@ -1,0 +1,295 @@
+Engine: fuzzy_controller
+
+InputVariable: target_angle
+  enabled: true
+  range: -200.0 200.0
+  term: t0 Triangle -40.0 0.0 40.0
+  term: t1 Triangle 0.0 40.0 80.0
+
+  term: t2 Triangle 40.0 80.0 90.0
+  term: lf Triangle 80.0 90.0 90.0
+  term: lb Triangle 89.999999999 89.999999999 120.0
+  term: t3 Triangle 89.999999999 120.0 160.0
+
+  term: t4 Triangle 120.0 160.0 180.0
+  term: t5 Triangle -180.0 -160.0 -120.0
+
+  term: t6 Triangle -160.0 -120.0 -89.999999999
+  term: rb Triangle -120.0 -89.999999999 -89.999999999
+  term: rf Triangle -90.0 -90.0 -80
+  term: t7 Triangle -90.0 -80.0 -40.0
+
+  term: t8 Triangle -80.0 -40.0 0.0
+
+  term: tbp Triangle 160.0 180.0 180.0
+  term: tbn Triangle -180.0 -180.0 -160.0
+
+InputVariable: target_distance
+  enabled: true
+  range: 0.0 3.0
+  term: reached    Trapezoid    0.0 0.0 0.5 0.1
+  term: very_close Triangle     0.05 0.1 0.15
+  term: close      Triangle     0.085 0.3 0.45
+  term: mid        Triangle     0.35 0.45 0.55
+  term: far        Trapezoid    0.5 0.6 3.0 3.0
+
+InputVariable: sens0
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens1
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens2
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens3
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens4
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens5
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens6
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens7
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: sens8
+  enabled: true
+  range: 0.0 1.0
+  term: close     Triangle    0.0 0.0 0.17
+  term: safe      Triangle    0.15 0.225 0.3
+  term: clear     Triangle    0.25 0.42 0.42
+
+InputVariable: avoid_side_pick
+  enabled: true
+  range: 0.0 1.0
+  term: left Triangle 0.0 0.0 0.0
+  term: right Triangle 1.0 1.0 1.0
+
+OutputVariable: vel_angle
+  enabled: true
+  range: -320.0 320.0
+  aggregation: EinsteinSum
+  default: 0.0
+  defuzzifier: Centroid 500
+
+  term: v0 Triangle -40.0 0.0 40.0
+  term: v1 Triangle 0.0 40.0 80.0
+  term: v2 Triangle 40.0 80.0 120.0
+  term: v3 Triangle 80.0 120.0 160.0
+  term: v4 Triangle 120.0 160.0 200.0
+  term: v5 Triangle -200.0 -160.0 -120.0
+  term: v6 Triangle -160.0 -120.0 -80.0
+  term: v7 Triangle -120.0 -80.0 -40.0
+  term: v8 Triangle -80.0 -40.0 0.0
+  term: v5s Triangle 160.0 200.0 240.0
+  term: v6s Triangle 200.0 240.0 280.0
+  term: v7s Triangle 240.0 280.0 320.0
+  term: v4s Triangle -240.0 -200.0 -160.0
+  term: v3s Triangle -280.0 -240.0 -200.0
+  term: v2s Triangle -320.0 -280.0 -240.0
+  term: vbp Triangle 160.0 180.0 200.0
+  term: vbn Triangle -200.0 -180.0 -160.0
+  term: vl Triangle 70.0 90.0 110.0
+  term: vr Triangle -110.0 -90.0 -70.0
+
+OutputVariable: vel_mag
+  enabled: true
+  default: 0.0
+  range: 0.0 0.4
+  aggregation: EinsteinSum
+  defuzzifier: Centroid 500
+  term: stop      Triangle    0.0 0.0 0.001
+  term: slow      Triangle    0.08 0.1 0.15
+  term: medium    Triangle    0.1 0.2 0.3
+  term: fast      Trapezoid   0.2 0.3 0.32 0.32
+
+RuleBlock: target_following
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: AlgebraicProduct
+  activation: General
+
+  # REACHED TARGET - STOP
+  rule: if target_distance is reached then vel_mag is stop
+  # --- Very close range ---
+  rule: if target_distance is very_close and target_angle is t0 then vel_angle is v0 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t1 then vel_angle is v1 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t2 then vel_angle is v2 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is lf then vel_angle is vl and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is lb then vel_angle is vl and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t3 then vel_angle is v3 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t4 then vel_angle is v4 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t5 then vel_angle is v5 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t6 then vel_angle is v6 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is rf then vel_angle is vr and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is rb then vel_angle is vr and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t7 then vel_angle is v7 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is t8 then vel_angle is v8 and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is tbn then vel_angle is vbn and vel_mag is slow
+  rule: if target_distance is very_close and target_angle is tbp then vel_angle is vbp and vel_mag is slow
+  # --- Close range ---
+  rule: if target_distance is close and target_angle is t0 and sens0 is not close then vel_angle is v0 and vel_mag is medium
+  rule: if target_distance is close and target_angle is t1 and sens1 is not close then vel_angle is v1 and vel_mag is medium
+  rule: if target_distance is close and target_angle is t2 and sens2 is not close then vel_angle is v2 and vel_mag is medium
+  rule: if target_distance is close and target_angle is lf and sens2 is not close then vel_angle is vl and vel_mag is medium
+  rule: if target_distance is close and target_angle is lb and sens2 is not close then vel_angle is vl and vel_mag is medium
+  rule: if target_distance is close and target_angle is t3 and sens3 is not close then vel_angle is v3 and vel_mag is medium
+  rule: if target_distance is close and target_angle is t4 and sens4 is not close then vel_angle is v4 and vel_mag is medium
+  rule: if target_distance is close and target_angle is t5 and sens5 is not close then vel_angle is v5 and vel_mag is medium
+  rule: if target_distance is close and target_angle is t6 and sens6 is not close then vel_angle is v6 and vel_mag is medium
+  rule: if target_distance is close and target_angle is rf and sens7 is not close then vel_angle is vr and vel_mag is medium
+  rule: if target_distance is close and target_angle is rb and sens7 is not close then vel_angle is vr and vel_mag is medium
+  rule: if target_distance is close and target_angle is t7 and sens7 is not close then vel_angle is v7 and vel_mag is medium
+  rule: if target_distance is close and target_angle is t8 and sens8 is not close then vel_angle is v8 and vel_mag is medium
+  rule: if target_distance is close and target_angle is tbn and (sens4 is not close and sens5 is not close) then vel_angle is vbn and vel_mag is medium
+  rule: if target_distance is close and target_angle is tbp and (sens4 is not close and sens5 is not close) then vel_angle is vbp and vel_mag is medium
+  # --- Mid range ---
+  rule: if target_distance is mid and target_angle is t0 and sens0 is clear then vel_angle is v0 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t1 and sens1 is clear then vel_angle is v1 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t2 and sens2 is clear then vel_angle is v2 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is lf and sens2 is clear then vel_angle is vl and vel_mag is fast
+  rule: if target_distance is mid and target_angle is lb and sens2 is clear then vel_angle is vl and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t3 and sens3 is clear then vel_angle is v3 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t4 and sens4 is clear then vel_angle is v4 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t5 and sens5 is clear then vel_angle is v5 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t6 and sens6 is clear then vel_angle is v6 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is rf and sens7 is clear then vel_angle is vr and vel_mag is fast
+  rule: if target_distance is mid and target_angle is rb and sens7 is clear then vel_angle is vr and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t7 and sens7 is clear then vel_angle is v7 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is t8 and sens8 is clear then vel_angle is v8 and vel_mag is fast
+  rule: if target_distance is mid and target_angle is tbn and (sens4 is clear and sens5 is clear) then vel_angle is vbn and vel_mag is fast
+  rule: if target_distance is mid and target_angle is tbp and (sens4 is clear and sens5 is clear) then vel_angle is vbp and vel_mag is fast
+  # --- Far range ---
+  rule: if target_distance is far and target_angle is t0 and sens0 is clear then vel_angle is v0 and vel_mag is fast
+  rule: if target_distance is far and target_angle is t1 and sens1 is clear then vel_angle is v1 and vel_mag is fast
+  rule: if target_distance is far and target_angle is t2 and sens2 is clear then vel_angle is v2 and vel_mag is fast
+  rule: if target_distance is far and target_angle is lf and sens2 is clear then vel_angle is vl and vel_mag is fast
+  rule: if target_distance is far and target_angle is lb and sens2 is clear then vel_angle is vl and vel_mag is fast
+  rule: if target_distance is far and target_angle is t3 and sens3 is clear then vel_angle is v3 and vel_mag is fast
+  rule: if target_distance is far and target_angle is t4 and sens4 is clear then vel_angle is v4 and vel_mag is fast
+  rule: if target_distance is far and target_angle is t5 and sens5 is clear then vel_angle is v5 and vel_mag is fast
+  rule: if target_distance is far and target_angle is t6 and sens6 is clear then vel_angle is v6 and vel_mag is fast
+  rule: if target_distance is far and target_angle is rf and sens7 is clear then vel_angle is vr and vel_mag is fast
+  rule: if target_distance is far and target_angle is rb and sens7 is clear then vel_angle is vr and vel_mag is fast
+  rule: if target_distance is far and target_angle is t7 and sens7 is clear then vel_angle is v7 and vel_mag is fast
+  rule: if target_distance is far and target_angle is t8 and sens8 is clear then vel_angle is v8 and vel_mag is fast
+  rule: if target_distance is far and target_angle is tbn and (sens4 is clear and sens5 is clear) then vel_angle is vbn and vel_mag is fast
+  rule: if target_distance is far and target_angle is tbp and (sens4 is clear and sens5 is clear) then vel_angle is vbp and vel_mag is fast
+
+RuleBlock: obstacle_repulsion_no_wrapping
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: AlgebraicProduct
+  activation: General
+
+  # ===== CASE: Target angle is in front semicircle ===== 
+  # ----- side/back repulsion -----
+  rule: if sens0 is close and (target_angle is lf or target_angle is t2) and (target_distance is not very_close and target_distance is not reached) then vel_angle is vbp and vel_mag is fast
+  rule: if sens0 is close and (target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is vbn and vel_mag is fast
+  rule: if sens1 is close and (target_angle is t8 or target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v5 and vel_mag is fast
+  rule: if sens2 is close and (target_angle is t0 or target_angle is t8 or target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v6 and vel_mag is fast
+  rule: if sens3 is close and (target_angle is t1 or target_angle is t0 or target_angle is t8 or target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v7 and vel_mag is fast
+  rule: if sens4 is close and (target_angle is lf or target_angle is t2 or target_angle is t1 or target_angle is t0 or target_angle is t8 or target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v8 and vel_mag is fast
+  rule: if sens5 is close and (target_angle is lf or target_angle is t2 or target_angle is t1 or target_angle is t0 or target_angle is t8 or target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v0 and vel_mag is fast
+  rule: if sens6 is close and (target_angle is lf or target_angle is t2 or target_angle is t1 or target_angle is t0 or target_angle is t8) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v1 and vel_mag is fast
+  rule: if sens7 is close and (target_angle is lf or target_angle is t2 or target_angle is t1 or target_angle is t0) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v2 and vel_mag is fast
+  rule: if sens8 is close and (target_angle is lf or target_angle is t2 or target_angle is t1) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v3 and vel_mag is fast
+  # ----- slight repulsion to the LEFT from current target heading (target is within +40..80 deg from sensor) -----
+  rule: if sens0 is close and target_angle is t1 and (target_distance is not very_close and target_distance is not reached) then vel_angle is v4 and vel_mag is fast
+  rule: if sens1 is close and (target_angle is t2 or target_angle is lf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v5s and vel_mag is fast
+  rule: if sens8 is close and target_angle is t0 and (target_distance is not very_close and target_distance is not reached) then vel_angle is v3 and vel_mag is fast
+  rule: if sens7 is close and target_angle is t8 and (target_distance is not very_close and target_distance is not reached) then vel_angle is v2 and vel_mag is fast
+  rule: if sens6 is close and (target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v1 and vel_mag is fast
+  # ----- slight repulsion to the RIGHT from current target heading (target is within -40..-80 deg from sensor) -----
+  rule: if sens3 is close and (target_angle is lf or target_angle is t2) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v8 and vel_mag is fast
+  rule: if sens2 is close and target_angle is t1 and (target_distance is not very_close and target_distance is not reached) then vel_angle is v7 and vel_mag is fast
+  rule: if sens1 is close and target_angle is t0 and (target_distance is not very_close and target_distance is not reached) then vel_angle is v6 and vel_mag is fast
+  rule: if sens0 is close and target_angle is t8 and (target_distance is not very_close and target_distance is not reached) then vel_angle is v5 and vel_mag is fast
+  rule: if sens8 is close and (target_angle is t7 or target_angle is rf) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v4s and vel_mag is fast
+
+
+RuleBlock: obstacle_repulsion_pos_wrapping
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: AlgebraicProduct
+  activation: General
+
+  # ===== CASE: Target angle is in lb/t3/t4/bp =====
+  # ----- side/back repulsion -----
+  rule: if sens0 is close and (target_angle is lb or target_angle is t3 or target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is vbp and vel_mag is fast
+  rule: if sens1 is close and (target_angle is lb or target_angle is t3 or target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v6s and vel_mag is fast
+  rule: if sens2 is close and (target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v7s and vel_mag is fast
+  rule: if sens5 is close and (target_angle is lb or target_angle is t3) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v0 and vel_mag is fast
+  rule: if sens6 is close and (target_angle is lb or target_angle is t3 or target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v1 and vel_mag is fast
+  rule: if sens7 is close and (target_angle is lb or target_angle is t3 or target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v2 and vel_mag is fast
+  rule: if sens8 is close and (target_angle is lb or target_angle is t3 or target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v3 and vel_mag is fast
+  # ----- slight repulsion to the LEFT from current target heading (target is within +40..80 deg from sensor)   -----
+  rule: if sens2 is close and (target_angle is t3 or target_angle is lb) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v6s and vel_mag is fast
+  rule: if sens3 is close and (target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v7s and vel_mag is fast
+  # ----- slight repulsion to the RIGHT from current target heading (target is within -40..-80 deg from sensor) -----
+  rule: if sens5 is close and (target_angle is t4 or target_angle is tbp) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v1 and vel_mag is fast
+  rule: if sens4 is close and (target_angle is t3 or target_angle is lb) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v0 and vel_mag is fast
+
+
+RuleBlock: obstacle_repulsion_neg_wrapping
+  enabled: true
+  conjunction: Minimum
+  disjunction: Maximum
+  implication: AlgebraicProduct
+  activation: General
+
+  # ===== CASE: Target angle is in lb/t3/t4/bp =====
+  # ----- side/back repulsion -----
+  rule: if sens0 is close and (target_angle is rb or target_angle is t6 or target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is vbn and vel_mag is fast
+  rule: if sens1 is close and (target_angle is rb or target_angle is t6 or target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v6 and vel_mag is fast
+  rule: if sens2 is close and (target_angle is rb or target_angle is t6 or target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v7 and vel_mag is fast
+  rule: if sens3 is close and (target_angle is rb or target_angle is t6 or target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v8 and vel_mag is fast
+  rule: if sens4 is close and (target_angle is rb or target_angle is t6) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v0 and vel_mag is fast
+  rule: if sens7 is close and (target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v2s and vel_mag is fast
+  rule: if sens8 is close and (target_angle is rb or target_angle is t6 or target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v3s and vel_mag is fast
+  # ----- slight repulsion to the LEFT from current target heading (target is within +40..80 deg from sensor)   -----
+  rule: if sens4 is close and (target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v8 and vel_mag is fast
+  rule: if sens5 is close and (target_angle is t6 or target_angle is rb) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v0 and vel_mag is fast
+  # ----- slight repulsion to the RIGHT from current target heading (target is within -40..-80 deg from sensor) -----
+  rule: if sens7 is close and (target_angle is t6 or target_angle is rb) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v3s and vel_mag is fast
+  rule: if sens6 is close and (target_angle is t5 or target_angle is tbn) and (target_distance is not very_close and target_distance is not reached) then vel_angle is v2s and vel_mag is fast

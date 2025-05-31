@@ -1,0 +1,31 @@
+from setuptools import find_packages, setup
+
+package_name = 'robotino_fuzzy'
+
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/launch', ['launch/fuzzy_sim.launch.py']),
+        ('share/' + package_name + '/launch', ['launch/robotino_fuzzy.launch.py']),
+    ],
+    install_requires=['setuptools'],
+    zip_safe=True,
+    maintainer='jv4k',
+    maintainer_email='zhmisha2014@gmail.com',
+    description='Robotino sim with fuzzy ctrl',
+    license='Apache-2.0',
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+	'sim_node = robotino_fuzzy.sim_node:main',
+	'fuzzy_controller_node = robotino_fuzzy.fuzzy_controller_node:main',
+    'robotino_tcp_bridge = robotino_fuzzy.robotino_tcp_bridge:main',
+    'robotino_viz = robotino_fuzzy.robotino_viz:main',
+        ],
+    },
+)
