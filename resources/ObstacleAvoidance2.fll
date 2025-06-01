@@ -4,21 +4,21 @@ InputVariable: target_errX
   enabled: true
   range: -3000.0 3000.0
 
-  term: neg_high Trapezoid -2500.0 -1500.0 -800.0   -600.0
+  term: neg_high Trapezoid -2500.0 -1500.0 -800.0   -450.0
   term: neg_low Trapezoid  -500.0  -450.0  -80.0     0.0
   term: zero    Triangle   -80.0    0.0     80.0
   term: pos_low Trapezoid   0.0     80.0    450.0    500.0
-  term: pos_high Trapezoid  600.0   800.0   1500.0   2500.0
+  term: pos_high Trapezoid  450.0   800.0   1500.0   2500.0
 
 InputVariable: target_errY
   enabled: true
   range: -3000.0 3000.0
 
-  term: neg_high Trapezoid -2500.0 -1500.0 -800.0   -600.0
+  term: neg_high Trapezoid -2500.0 -1500.0 -800.0   -450.0
   term: neg_low Trapezoid  -500.0  -450.0  -80.0     0.0
   term: zero    Triangle   -80.0    0.0     80.0
   term: pos_low Trapezoid   0.0     80.0    450.0    500.0
-  term: pos_high Trapezoid  600.0   800.0   1500.0   2500.0
+  term: pos_high Trapezoid  450.0   800.0   1500.0   2500.0
 
 InputVariable: sens0  
   enabled: true
@@ -122,30 +122,18 @@ RuleBlock: target_achieving
   implication: AlgebraicProduct
   activation: General
 
-  rule:	if	target_errX	is 	neg_high and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	neg_high
-  rule:	if	target_errX	is 	neg_low and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	neg_high
-  rule:	if	target_errX	is 	zero	then	vel_X is	zero
-  rule:	if	target_errX	is 	pos_low and sens0	is	clear	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	pos_high
-  rule:	if	target_errX	is 	pos_high and sens0	is	clear	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	pos_high
+  rule:	if	target_errX	is 	neg_high  and sens4 is not super_dangerous  and sens5 is not super_dangerous	then	vel_X is	neg_high
+  rule:	if	target_errX	is 	neg_low   and sens4 is not super_dangerous  and sens5 is not super_dangerous	then	vel_X is	neg_high
+  rule:	if	target_errX	is 	zero      then	vel_X is	zero
+  rule:	if	target_errX	is 	pos_low   and sens0 is not super_dangerous  and sens1 is not super_dangerous  and sens8 is not super_dangerous  then	vel_X is	pos_high
+  rule:	if	target_errX	is 	pos_high  and sens0 is not super_dangerous  and sens1 is not super_dangerous  and sens8 is not super_dangerous	then	vel_X is	pos_high
                 
-  rule:	if	target_errY	is 	neg_high and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_Y is	neg_high
-  rule:	if	target_errY	is 	neg_low and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_Y is	neg_high
-  rule:	if	target_errY	is 	zero	then	vel_Y is	zero
-  rule:	if	target_errY	is 	pos_low and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	and	sens4	is	not super_dangerous	and	sens5	is	not super_dangerous	then	vel_Y is	pos_high
-  rule:	if	target_errY	is 	pos_high and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_Y is	pos_high
+  rule:	if	target_errY	is 	neg_high  and sens6 is not super_dangerous  and sens7 is not super_dangerous	then	vel_Y is	neg_high
+  rule:	if	target_errY	is 	neg_low	  and sens6 is not super_dangerous  and sens7 is not super_dangerous  then	vel_Y is	neg_high
+  rule:	if	target_errY	is 	zero	    then	vel_Y is	zero
+  rule:	if	target_errY	is 	pos_low   and sens2 is not super_dangerous  and sens3 is not super_dangerous	then	vel_Y is	pos_high
+  rule:	if	target_errY	is 	pos_high  and sens2 is not super_dangerous  and sens3 is not super_dangerous  then	vel_Y is	pos_high
 
-
-  #rule:	if	target_errX	is 	neg_high and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	neg_high
-  #rule:	if	target_errX	is 	neg_low and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	neg_high
-  #rule:	if	target_errX	is 	zero	then	vel_X is	zero
-  #rule:	if	target_errX	is 	pos_low and sens0	is	clear	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	pos_high
-  #rule:	if	target_errX	is 	pos_high and sens0	is	clear	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_X is	pos_high
-                
-  #rule:	if	target_errY	is 	neg_high and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_Y is	neg_high
-  #rule:	if	target_errY	is 	neg_low and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_Y is	neg_high
-  #rule:	if	target_errY	is 	zero	then	vel_Y is	zero
-  #rule:	if	target_errY	is 	pos_low and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	and	sens4	is	not super_dangerous	and	sens5	is	not super_dangerous	then	vel_Y is	pos_high
-  #rule:	if	target_errY	is 	pos_high and sens0	is	not super_dangerous	and	sens1 is	not super_dangerous	and	sens8	is	not super_dangerous	then	vel_Y is	pos_high
 
 RuleBlock: save_robot
   enabled: true
@@ -154,19 +142,22 @@ RuleBlock: save_robot
   implication: AlgebraicProduct
   activation: General
 
-  rule:	if	sens0	is 	super_dangerous	then	vel_X is	neg_high
+  rule:	if	sens0	is 	super_dangerous	then	vel_X is	neg_high and	vel_Y is	zero
   rule:	if	sens1	is 	super_dangerous	then	vel_X is	neg_high and vel_Y is neg_low
   rule:	if	sens2	is 	super_dangerous	then	vel_X is	neg_low  and vel_Y is neg_high
   rule:	if	sens3	is 	super_dangerous	then	vel_X is	pos_low  and vel_Y is neg_high
-  rule:	if	sens4	is 	super_dangerous and sens5 is clear then	vel_X is	pos_high and vel_Y is neg_low
-  rule:	if	sens5	is 	super_dangerous and sens4 is clear	then	vel_X is	pos_high and vel_Y is pos_low
+  rule:	if	sens4	is 	super_dangerous then	vel_X is	pos_high and vel_Y is neg_low
+  rule:	if	sens5	is 	super_dangerous	then	vel_X is	pos_high and vel_Y is pos_low
   rule:	if	sens6	is 	super_dangerous	then	vel_X is	pos_low and vel_Y is pos_high
   rule:	if	sens7	is 	super_dangerous	then	vel_X is	neg_high and vel_Y is pos_high
   rule:	if	sens8	is 	super_dangerous	then	vel_X is	neg_high and vel_Y is pos_low
-  rule:	if	sens4	is 	super_dangerous and sens5 is super_dangerous then	vel_Y is neg_high
+  rule: if  sens2 is  super_dangerous and sens7 is super_dangerous  then	vel_X is	neg_high and  vel_Y is zero
+  rule:	if	sens4	is 	super_dangerous and sens5 is super_dangerous  then	vel_X is	zero and  vel_Y is  pos_high
+  rule:	if	sens0	is 	super_dangerous and sens4 is super_dangerous  then	vel_X is	zero and	vel_Y is  pos_high
+  rule:	if	sens0	is 	super_dangerous and sens4 is super_dangerous and sens5 is super_dangerous	then	vel_X is	zero and	vel_Y is  pos_high
 
 RuleBlock: frontal_avoidance
-  enabled: true
+  enabled: false
   conjunction: Minimum
   disjunction: Maximum
   implication: AlgebraicProduct
@@ -174,10 +165,10 @@ RuleBlock: frontal_avoidance
 
   #При центральном препятствии
   rule:	if	sens0	is	dangerous	and	sens1	is	clear	and	sens8	is	clear	and	target_errY	is 	neg_high	then	vel_X	is	neg_mid	and	vel_Y	is	neg_mid
-  #rule:	if	sens0	is	dangerous	and	sens1	is	clear	and	sens8	is	clear	and	target_errY	is 	neg_low	then	vel_X	is	neg_mid	and	vel_Y	is	neg_mid
+  rule:	if	sens0	is	dangerous	and	sens1	is	clear	and	sens8	is	clear	and	target_errY	is 	neg_low	then	vel_X	is	neg_mid	and	vel_Y	is	neg_mid
                                                   
   rule:	if	sens0	is	dangerous	and	sens1	is	clear	and	sens8	is	clear	and	target_errY	is 	pos_high	then	vel_X	is	neg_mid	and	vel_Y	is	pos_mid
-  #rule:	if	sens0	is	dangerous	and	sens1	is	clear	and	sens8	is	clear	and	target_errY	is 	pos_low	then	vel_X	is	neg_mid	and	vel_Y	is	pos_mid
+  rule:	if	sens0	is	dangerous	and	sens1	is	clear	and	sens8	is	clear	and	target_errY	is 	pos_low	then	vel_X	is	neg_mid	and	vel_Y	is	pos_mid
                                                   
                                                   
   rule:	if	sens0	is	dangerous	and	sens1	is	dangerous	and	sens8	is	clear	then	vel_X	is	neg_mid	and	vel_Y	is	neg_mid				
