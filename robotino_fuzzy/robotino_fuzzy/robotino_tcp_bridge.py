@@ -69,14 +69,18 @@ class RobotinoTCPBridge(Node):
     def timer_callback(self):
         # Pack and publish odometry data
         odometry_readings = self.get_odometry()
+        for i in range(len(odometry_readings)):
+            odometry_readings[i] = odometry_readings[i] * 1000
         self.publish_odometry(odometry_readings)
 
         # Pack and publish proximity sensors data
         sensors_readings = self.get_proximity_sensor_values()
+        for i in range(len(sensors_readings)):
+            sensors_readings[i] = sensors_readings[i] * 1000
         self.publish_sensors(sensors_readings)
 
         # Send buffered velocities
-        self.send_velocity(self.vx, self.vy, self.omega)
+        self.send_velocity(self.vx/1000, self.vy/1000, self.omega)
 
     def publish_odometry(self, odometry_readings):
         odom_msg = Odometry()

@@ -65,7 +65,7 @@ class SimParams:
         self.victory_flag = False
         self.defeat_flag = False
         self.start_flag = True
-
+        self.sim_flag = True
         self.walls = [
             Wall(0, 0, 2000 * mm, 0),  # Top
             Wall(0, 0, 0, 2000 * mm),  # Left
@@ -214,7 +214,7 @@ class Robot:
 
     def sensors_readings_calc(self, walls, missiles):
        # """Simulate ultrasonic sensor readings by checking walls and the moving obstacle."""
-        search_radius = 1  # Smaller search radius for precision
+        search_radius = 3  # Smaller search radius for precision
         for sensor_index in range(self.sensor_count):
             start_x = self.sensors_rays[sensor_index][0][0]
             start_y = self.sensors_rays[sensor_index][0][1]
@@ -356,20 +356,26 @@ class SimNode(Node):
         self.Params = SimParams()
         self.get_logger().info("Node initialized with 120 Hz (120 second) timer")
 
-        # Test publisher
-        #self.test_pub = self.create_publisher(String, '/robotino4/test', 10)
-
         # Proximity sensors publisher
-        self.sensors_pub = self.create_publisher(Float64MultiArray, '/robotino4/proximity_sensors', 10)
+        if (self.Params.sim_flag):
+            self.sensors_pub = self.create_publisher(Float64MultiArray, '/robotino4/proximity_sensors', 10)
 
         # Odometry publisher
-        self.odom_pub = self.create_publisher(Odometry, '/robotino4/odometry', 10)
+        if (self.Params.sim_flag):
+            self.odom_pub = self.create_publisher(Odometry, '/robotino4/odometry', 10)
+
 
         # Target coordinate publisher
         self.target_pos_pub = self.create_publisher(Point, '/robotino4/target_coordinate', 10)
 
         # Velocity command subscriber
         self.twist_sub = self.create_subscription(Twist, '/robotino4/cmd_vel', self.cmdvel_callback, 10)
+
+        if not self.Params.sim_flag:
+            self.odom_sub = self.create_subscription(Odometry, '/robotino4/odometry', self.odometry_callback, 10)
+
+        if not self.Params.sim_flag:
+            self.sensors_sub = self.create_subscription(Float64MultiArray, '/robotino4/proximity_sensors', self.sensors_callback, 10)
 
         self.vx_cmd = 0.0
         self.vy_cmd = 0.0
@@ -403,27 +409,32 @@ class SimNode(Node):
 
                     self.Params.start_flag = False
 
-                if self.Params.Thomas.x_velocity or self.Params.Thomas.y_velocity:
-                    self.Params.Thomas.velocity_limiter()
-                self.Params.Thomas.update_position()
+                if self.Params.sim_flag:
+                    if self.Params.Thomas.x_velocity or self.Params.Thomas.y_velocity:
+                        self.Params.Thomas.velocity_limiter()
+                    self.Params.Thomas.update_position()
+
                 self.Params.Thomas.draw(self.Params.screen)
                 self.Params.attacking_missiles_amount = 0
+                if (not self.Params.sim_flag):
+                    self.Params.attacking_missiles_amount = 9
                 for missile in self.Params.missiles:
                     missile.attacking_status_check(self.Params.Thomas)
                     if missile.is_attacking:
                         self.Params.attacking_missiles_amount += 1
-
-                if pygame.time.get_ticks() - self.Params.prev_spawn_time > 700 + random.randint(100, 400):
-                    if self.Params.attacking_missiles_amount < 3:
-                        pos = random.randint(0, 4)
-                        if 2 < pos < 6:
-                            pos += 4
-                        self.Params.missiles.append(Missile(pos,400*mm, random.uniform(0.05,0.1),self.Params.Thomas))
-                    prev_spawn_time = pygame.time.get_ticks()
+                if self.Params.sim_flag:
+                    if pygame.time.get_ticks() - self.Params.prev_spawn_time > 700 + random.randint(100, 400):
+                        if self.Params.attacking_missiles_amount < 3:
+                            pos = random.randint(0, 4)
+                            if 2 < pos < 6:
+                                pos += 4
+                            self.Params.missiles.append(Missile(pos,400*mm, random.uniform(0.05,0.1),self.Params.Thomas))
+                        prev_spawn_time = pygame.time.get_ticks()
 
                 # print(attacking_missiles_amount)
                 attacking_missiles_amount = 0
-                self.Params.Thomas.sensors_readings_calc(self.Params.walls, self.Params.missiles)
+                if self.Params.sim_flag:
+                    self.Params.Thomas.sensors_readings_calc(self.Params.walls, self.Params.missiles)
 
                 to_print = [0]*self.Params.Thomas.sensor_count
                 for index in range(len(self.Params.Thomas.sensors_readings)):
@@ -431,12 +442,13 @@ class SimNode(Node):
                     to_print[index] = (value, ' ', index)
                 #print(to_print)
 
+                if self.Params.sim_flag:
+                    for i in self.Params.missiles:
+                        i.update_position()
+                        i.draw(self.Params.screen)
 
-                for i in self.Params.missiles:
-                    i.update_position()
-                    i.draw(self.Params.screen)
-
-                self.Params.Thomas.sensors_rays_calc()
+                if self.Params.sim_flag:
+                    self.Params.Thomas.sensors_rays_calc()
                 self.Params.Thomas.sensors_rays_draw(self.Params.screen)
                 # print(Thomas.x, '  ', Thomas.y)
                 #missiles.clear()
@@ -516,35 +528,34 @@ class SimNode(Node):
 
 
                 # -----------------------------------------------------------------
+            self.Params.gameplay = True
+            # elif self.Params.victory:
+            #     self.Params.screen.fill('white')
+            #     self.Params.screen.blit(self.Params.victory_label,(self.Params.display_size[0]/2- 140,self.Params.display_size[1]/2 - 140))
+            #     if self.Params.victory_flag:
+            #         self.Params.victory_flag = False
+            #         # pygame.mixer.music.load("sound\music\Victory.mp3")
+            #         # pygame.mixer.music.play()
+            #         # self.Params.channel1.play(self.Params.victory_sound)
 
+            #     if keys[pygame.K_SPACE]:
+            #         self.Params.gameplay = True
+            #         self.Params.victory = False
+            #         self.Params.start_flag = True
+            # else:
+            #     self.Params.screen.fill('darkgrey')
+            #     self.Params.screen.blit(self.Params.lose_label,(self.Params.display_size[0]/2- 140,self.Params.display_size[1]/2 - 140))
 
-            elif self.Params.victory:
-                self.Params.screen.fill('white')
-                self.Params.screen.blit(self.Params.victory_label,(self.Params.display_size[0]/2- 140,self.Params.display_size[1]/2 - 140))
-                if self.Params.victory_flag:
-                    self.Params.victory_flag = False
-                    # pygame.mixer.music.load("sound\music\Victory.mp3")
-                    # pygame.mixer.music.play()
-                    # self.Params.channel1.play(self.Params.victory_sound)
+            #     if self.Params.defeat_flag:
+            #         self.Params.defeat_flag = False
+            #         # pygame.mixer.music.load("sound\music\Defeat.mp3")
+            #         # pygame.mixer.music.play(start=1)
+            #         # self.Params.channel1.play(self.Params.defeat_sound)
 
-                if keys[pygame.K_SPACE]:
-                    self.Params.gameplay = True
-                    self.Params.victory = False
-                    self.Params.start_flag = True
-            else:
-                self.Params.screen.fill('darkgrey')
-                self.Params.screen.blit(self.Params.lose_label,(self.Params.display_size[0]/2- 140,self.Params.display_size[1]/2 - 140))
-
-                if self.Params.defeat_flag:
-                    self.Params.defeat_flag = False
-                    # pygame.mixer.music.load("sound\music\Defeat.mp3")
-                    # pygame.mixer.music.play(start=1)
-                    # self.Params.channel1.play(self.Params.defeat_sound)
-
-                if keys[pygame.K_SPACE]:
-                    self.Params.gameplay = True
-                    self.Params.victory = False
-                    self.Params.start_flag = True
+            #     if keys[pygame.K_SPACE]:
+            #         self.Params.gameplay = True
+            #         self.Params.victory = False
+            #         self.Params.start_flag = True
 
             pygame.display.update()
 
@@ -556,30 +567,31 @@ class SimNode(Node):
             # ---------------------------------Simulator's code end--------------------------------------------------------------------------------------------------
             
             #----------------------------------Publications----------------------------------------------------
+            if (self.Params.sim_flag):
+                    # Prepare, publish and log sensors data
+                sens_msg = Float64MultiArray()
+                sens_msg.data = [0.0] * 9  # Initialize with zeros
+                for i in range(9):
+                    sens_msg.data[i] = self.Params.Thomas.sensors_readings[i]/mm
+                self.sensors_pub.publish(sens_msg)
+                self.get_logger().info(
+                    f'Publishing sensor data: ' + ' '.join(f'{x:4.2f}' for x in sens_msg.data)
+                )
 
-                # Prepare, publish and log sensors data
-            sens_msg = Float64MultiArray()
-            sens_msg.data = [0.0] * 9  # Initialize with zeros
-            for i in range(9):
-                sens_msg.data[i] = self.Params.Thomas.sensors_readings[i]/mm
-            self.sensors_pub.publish(sens_msg)
-            self.get_logger().info(
-                f'Publishing sensor data: ' + ' '.join(f'{x:4.2f}' for x in sens_msg.data)
-            )
-
-
-                # Prepare, publish and log odometry data
-            odom_msg = Odometry()
-            odom_msg.header.stamp = self.get_clock().now().to_msg()
-            odom_msg.header.frame_id = 'odom'  # Parent frame
-            odom_msg.child_frame_id = 'base_link'  # Child frame
-            global_coordinates = (self.Params.Thomas.x/mm,self.Params.Thomas.y/mm)
-            relative_coordinates = self.Params.switch_reference_frame_to_relative(global_coordinates)
-            odom_msg.pose.pose.position.x = relative_coordinates[0]
-            odom_msg.pose.pose.position.y = relative_coordinates[1]
-            self.odom_pub.publish(odom_msg)
-            self.get_logger().info(
-                f'Publishing odometry data: x={odom_msg.pose.pose.position.x:5.4f}, y={odom_msg.pose.pose.position.y:5.4f}')
+            if (self.Params.sim_flag):
+                    # Prepare, publish and log odometry data
+                odom_msg = Odometry()
+                odom_msg.header.stamp = self.get_clock().now().to_msg()
+                odom_msg.header.frame_id = 'odom'  # Parent frame
+                odom_msg.child_frame_id = 'base_link'  # Child frame
+                global_coordinates = (self.Params.Thomas.x/mm,self.Params.Thomas.y/mm)
+                relative_coordinates = self.Params.switch_reference_frame_to_relative(global_coordinates)
+                odom_msg.pose.pose.position.x = relative_coordinates[0]
+                odom_msg.pose.pose.position.y = relative_coordinates[1]
+                self.odom_pub.publish(odom_msg)
+                self.get_logger().info(
+                    f'Publishing odometry data: x={odom_msg.pose.pose.position.x:5.4f}, y={odom_msg.pose.pose.position.y:5.4f}')
+                
             
                     # Prepare, publish and log target position data
             target_point_msg = Point()
@@ -589,8 +601,8 @@ class SimNode(Node):
             target_point_msg.y = target_point_relative_coordinates[1]
             target_point_msg.z = 0.0
             self.target_pos_pub.publish(target_point_msg)
-            self.get_logger().info(
-                f'Publishing target coordinates: x={target_point_msg.x:5.4f}, y={target_point_msg.y:5.4f}, z={target_point_msg.z:5.4f}')
+            #self.get_logger().info(
+            #    f'Publishing target coordinates: x={target_point_msg.x:5.4f}, y={target_point_msg.y:5.4f}, z={target_point_msg.z:5.4f}')
 
         except Exception as e:
             self.get_logger().error(f"Error in timer callback: {str(e)}")
@@ -603,6 +615,21 @@ class SimNode(Node):
         self.vx_cmd = v_global[0]
         self.vy_cmd = v_global[1]
         return
+    
+    def odometry_callback(self, msg):
+        robot_x_relative = msg.pose.pose.position.x
+        robot_y_relative = msg.pose.pose.position.y
+        robot_coord_relative = (robot_x_relative,robot_y_relative)
+        robot_coord_global = self.Params.switch_reference_frame_to_global(robot_coord_relative)
+        self.Params.Thomas.x = robot_coord_global[0]
+        self.Params.Thomas.y = robot_coord_global[1]
+        return
+
+    def sensors_callback(self, msg):
+        for i in range(len(self.Params.Thomas.sensors_readings)):
+            self.Params.Thomas.sensors_readings[i] = msg.data[i]
+        return
+    
 
 def main(args=None):
     rclpy.init(args=args)
