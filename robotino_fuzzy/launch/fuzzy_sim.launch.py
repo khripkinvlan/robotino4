@@ -16,5 +16,12 @@ def generate_launch_description():
             name='robotino4_simulator',
             output='screen',
             parameters=[]
+        ),
+        Node(
+            package='robotino_fuzzy',
+            executable='robotino_tcp_bridge.py',
+            name='tcp_bridge',
+            output='screen',
+            parameters=[]
         )
     ])

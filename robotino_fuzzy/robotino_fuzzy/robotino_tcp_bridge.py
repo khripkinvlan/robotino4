@@ -76,7 +76,7 @@ class RobotinoTCPBridge(Node):
         # Pack and publish proximity sensors data
         sensors_readings = self.get_proximity_sensor_values()
         for i in range(len(sensors_readings)):
-            sensors_readings[i] = sensors_readings[i] * 1000
+            sensors_readings[i] = (sensors_readings[i] * 1000) - 35
         self.publish_sensors(sensors_readings)
 
         # Send buffered velocities

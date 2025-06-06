@@ -65,7 +65,7 @@ class SimParams:
         self.victory_flag = False
         self.defeat_flag = False
         self.start_flag = True
-        self.sim_flag = True
+        self.sim_flag = False
         self.walls = [
             Wall(0, 0, 2000 * mm, 0),  # Top
             Wall(0, 0, 0, 2000 * mm),  # Left
@@ -208,8 +208,13 @@ class Robot:
             # Рендерим текст с номером
             text_surface_index = self.font.render((str(sensor_index)+" ("+str(sensor_index+1)+")"), True, (0, 0, 0))  # Черный цвет
             screen.blit(text_surface_index, text_pos_index)  # Рисуем текст
-            text_surface_value = self.font.render(str(round(self.sensors_readings[sensor_index]/mm,1)), True, (255, 255, 255))  # Белый цвет
+            if 0:
+                text_surface_value = self.font.render(str(round(self.sensors_readings[sensor_index]/mm,1)), True, (255, 255, 255))  # Белый цвет
+            
+            if 1:
+                text_surface_value = self.font.render(str(round(self.sensors_readings[sensor_index],1)), True, (255, 255, 255))  # Белый цвет
             screen.blit(text_surface_value, text_pos_value)  # Рисуем текст
+
 
 
     def sensors_readings_calc(self, walls, missiles):

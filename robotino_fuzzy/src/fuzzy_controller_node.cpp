@@ -61,7 +61,7 @@ public:
         try {
 
             std::string package_share_dir = ament_index_cpp::get_package_share_directory("robotino_fuzzy");
-            std::string fll_path = package_share_dir + "/resources/ObstacleAvoidance.fll";
+            std::string fll_path = package_share_dir + "/resources/ObstacleAvoidance2.fll";
             engine_ = fl::FllImporter().fromFile(fll_path);
             
             std::string status;
@@ -108,7 +108,7 @@ public:
         {
           sensors[i] = 0.0;
           previousReadings[i] = 0.0;
-          sensDerivatives[i] = 0.0;
+          //sensDerivatives[i] = 0.0;
         }
 
         
@@ -118,10 +118,10 @@ public:
         {
             sensors_inp[i] = engine_->getInputVariable("sens" + std::to_string(i));
         }
-        for (int i = 0; i < 9; i++)
-        {
-            sensDer_inp[i] = engine_->getInputVariable("sensDer" + std::to_string(i));
-        }
+        // for (int i = 0; i < 9; i++)
+        // {
+        //     sensDer_inp[i] = engine_->getInputVariable("sensDer" + std::to_string(i));
+        // }
 
         target_errX_inp = engine_->getInputVariable("target_errX");
         target_errY_inp = engine_->getInputVariable("target_errY");
@@ -154,10 +154,10 @@ private:
           sensors_inp[i]->setValue(sensors[i]);
         }
 
-        for(int i = 0; i < 9; i++)
-        {
-            sensDer_inp[i]->setValue(this->sensDerivatives[0]);
-        }
+        // for(int i = 0; i < 9; i++)
+        // {
+        //     sensDer_inp[i]->setValue(this->sensDerivatives[0]);
+        // }
 
         target_errX = target_X - robot_X;
         target_errY = target_Y - robot_Y;
@@ -192,18 +192,23 @@ private:
     void odometry_callback(const nav_msgs::msg::Odometry msg){
       robot_X = msg.pose.pose.position.x;
       robot_Y = msg.pose.pose.position.y;
+        RCLCPP_INFO(this->get_logger(), "Received robot_X = %.4f   robot_Y = %.4f",  target_X, target_Y);
     }
 
     void target_point_callback(const geometry_msgs::msg::Point msg){
       target_X = msg.x;
       target_Y = msg.y;
+        RCLCPP_INFO(this->get_logger(), "Received target_X = %.4f   target_Y = %.4f",  target_X, target_Y);
     }
 
     void sensors_callback(const std_msgs::msg::Float64MultiArray msg){
+    std::string infoMsg = "Received";
       for (int i = 0; i < 9; i++)
       {
         sensors[i] = msg.data[i];
+        infoMsg = infoMsg + " " + std::to_string(sensors[i]);
       }
+        RCLCPP_INFO(this->get_logger(), "Recieved sens0 = %.4f  sens1 = %.4f  sens2 = %.4f  sens3 = %.4f  sens4 = %.4f  sens5 = %.4f  sens6 = %.4f  sens7 = %.4f  sens8 = %.4f",  sensors[0], sensors[1], sensors[2], sensors[3], sensors[4], sensors[5], sensors[6], sensors[7], sensors[8]);
     }
 
     double robot_X;
@@ -216,14 +221,14 @@ private:
 
     double sensors[9];
     double previousReadings[9];
-    double sensDerivatives[9];
+    //double sensDerivatives[9];
 
     // Input and output variables of fuzzy engine
     
     
 
     fl::InputVariable* sensors_inp[9];
-    fl::InputVariable* sensDer_inp[9];
+    //fl::InputVariable* sensDer_inp[9];
 
     fl::InputVariable* target_errX_inp;
     fl::InputVariable* target_errY_inp;
